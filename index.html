@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Girls - Market </title>
+    <!-- Google Fonts & Font Awesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563eb;
+            --accent: #ff5722;
+            --bg-main: #f8fafc;
+            --card-bg: #ffffff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* --- COMPACT HEADER --- */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px 20px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-dark);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .nav-cart-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #eff6ff;
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* --- MAIN SINGLE FRAME CONTAINER --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px 20px;
+        }
+
+        /* Desktop & Laptop Grid Layout */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        /* Compact Ultra-Clean Product Card Design */
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            transition: all 0.25s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+            border-color: #cbd5e1;
+        }
+
+        .img-wrapper {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            background: #f8fafc;
+            overflow: hidden;
+        }
+
+        .img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .img-wrapper img {
+            transform: scale(1.04);
+        }
+
+        .product-content {
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .product-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-price {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .btn-details {
+            background: var(--text-dark);
+            color: #ffffff;
+            border: none;
+            padding: 9px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            width: 100%;
+        }
+
+        .product-card:hover .btn-details {
+            background: var(--primary);
+        }
+
+        /* --- PRODUCT POPUP / MODAL (DETAILS & CHECKOUT) --- */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .modal-box {
+            background: #ffffff;
+            width: 100%;
+            max-width: 800px;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalSlideUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-muted);
+            z-index: 10;
+            background: #f1f5f9;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .close-modal:hover {
+            background: #e2e8f0;
+            color: var(--text-dark);
+        }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+        }
+
+        .modal-img-container {
+            background: #f8fafc;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-img-container img {
+            width: 100%;
+            max-height: 340px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .modal-info {
+            padding: 24px;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 4px;
+        }
+
+        .modal-price {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+
+        .modal-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        /* Size Selection UI */
+        .option-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .size-grid {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .size-option {
+            border: 1px solid #cbd5e1;
+            background: #ffffff;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .size-option.selected, .size-option:hover {
+            border-color: var(--primary);
+            background: #eff6ff;
+            color: var(--primary);
+        }
+
+        /* Order Form */
+        .order-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .input-group label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .input-group input, .input-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .input-group input:focus, .input-group select:focus {
+            border-color: var(--primary);
+        }
+
+        .summary-box {
+            background: #f8fafc;
+            padding: 10px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .summary-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .summary-value {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--accent);
+        }
+
+        .btn-submit-order {
+            background: #16a34a;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 5px;
+        }
+
+        .btn-submit-order:hover {
+            background: #15803d;
+        }
+
+        .btn-submit-order:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        /* Mobile & Tablet Responsiveness */
+        @media (max-width: 900px) {
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            .modal-grid {
+                grid-template-columns: 1fr;
+            }
+            .modal-img-container img {
+                max-height: 220px;
+            }
+            .modal-info {
+                padding: 16px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .img-wrapper {
+                height: 140px;
+            }
+            .product-content {
+                padding: 10px;
+            }
+            .product-title {
+                font-size: 13px;
+            }
+            .product-price {
+                font-size: 15px;
+            }
+            .btn-details {
+                padding: 8px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- COMPACT NAVBAR -->
+    <header>
+        <div class="navbar">
+            <a href="#" class="logo">Girls <span>Market</span></a>
+            <div class="nav-cart-badge">
+                <i class="fa-solid fa-truck-fast"></i> ক্যাশ অন ডেলিভারি
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN SINGLE FRAME CONTAINER -->
+    <main class="container">
+        <div class="product-grid" id="productGrid"></div>
+    </main>
+
+    <!-- PRODUCT DETAILS & CHECKOUT MODAL POPUP -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-box">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="modal-grid">
+                <div class="modal-img-container">
+                    <img id="mImg" src="" alt="প্রোডাক্ট ছবি">
+                </div>
+                <div class="modal-info">
+                    <h2 class="modal-title" id="mTitle">প্রোডাক্ট এর নাম</h2>
+                    <div class="modal-price" id="mPrice">৳ 0</div>
+                    <p class="modal-desc" id="mDesc">প্রোডাক্ট বিবরণ...</p>
+
+                    <!-- SIZE SELECTION -->
+                    <span class="option-label">সাইজ সিলেক্ট করুন:</span>
+                    <div class="size-grid">
+                        <div class="size-option selected" onclick="selectSize(this)">M-</div>
+                        <div class="size-option" onclick="selectSize(this)">L</div>
+                        <div class="size-option" onclick="selectSize(this)">XL</div>
+                        <div class="size-option" onclick="selectSize(this)">XXL</div>
+                    </div>
+
+                    <!-- CUSTOMER ADDRESS & ORDER FORM -->
+                    <form class="order-form" id="orderForm">
+                        <div class="input-group">
+                            <label>আপনার নাম *</label>
+                            <input type="text" id="custName" required placeholder="সম্পূর্ণ নাম লিখুন">
+                        </div>
+                        <div class="input-group">
+                            <label>মোবাইল নম্বর *</label>
+                            <input type="tel" id="custPhone" required placeholder="017XXXXXXXX">
+                        </div>
+                        <div class="input-group">
+                            <label>ডেলিভারি ঠিকানা *</label>
+                            <input type="text" id="custAddress" required placeholder="বাড়ি নম্বর, রোড, এরিয়া">
+                        </div>
+                        <div class="input-group">
+                            <label>ডেলিভারি এরিয়া *</label>
+                            <select id="custLocation" onchange="updateTotal()">
+                                <option value="80">ঢাকার ভেতরে (৮০)</option>
+                                <option value="120">ঢাকার বাইরে (১২০)</option>
+                            </select>
+                        </div>
+
+                        <div class="summary-box">
+                            <span class="summary-title">মোট প্রদেয় মূল্য:</span>
+                            <span class="summary-value" id="totalPrice">৳ 0</span>
+                        </div>
+
+                        <button type="submit" class="btn-submit-order" id="submitBtn">
+                            <i class="fa-solid fa-check-circle"></i> <span id="btnText">অর্ডার কনফার্ম করুন</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE & TELEGRAM INTEGRATION SCRIPT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Your New Firebase Configuration (girlsmarket-3dc1a)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCIHa33BDYE17RoV8hqCqE1RR90xBzTzcU",
+            authDomain: "girlsmarket-3dc1a.firebaseapp.com",
+            databaseURL: "https://girlsmarket-3dc1a-default-rtdb.firebaseio.com",
+            projectId: "girlsmarket-3dc1a",
+            storageBucket: "girlsmarket-3dc1a.firebasestorage.app",
+            messagingSenderId: "831326137431",
+            appId: "1:831326137431:web:7a5db355e9f9b4ca9ac712",
+            measurementId: "G-3WD8EQ407X"
+        };
+
+        // Initialize Firebase & Firestore
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Telegram Bot Credentials
+        const TELEGRAM_BOT_TOKEN = "8882226425:AAE2pq77MvCXaRDSyLQIafU9HmQrvVGSBic";
+        const TELEGRAM_CHAT_ID = "6296479044";
+
+        // Storefront Products Data
+        const productsData = [
+            {
+                id: 1,
+                title: "প্রিমিয়াম পুরুষদের ক্যাজুয়াল শার্ট",
+                price: 1250,
+                img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQRwhploVrWWPWT3W7wSX-HJJhWJtmPWcAMCaGnE_-bLlvx_dbj5axy5xI&s",
+                desc: "১০০% কটন কাপড়ে তৈরি আরামদায়ক এবং আকর্ষণীয় প্রিমিয়াম শার্ট।"
+            },
+            {
+                id: 2,
+                title: "স্টাইলিশ ব্লু ডেনিম জ্যাকেট",
+                price: 2200,
+                img: "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=500&q=80",
+                desc: "টেকসই ডেনিম ফেব্রিক দিয়ে তৈরি ট্রেন্ডি ডিজাইন জ্যাকেট।"
+            },
+            {
+                id: 3,
+                title: "ক্লাসিক কটন পোলো টি-শার্ট",
+                price: 750,
+                img: "https://images.unsplash.com/photo-1586363104862-3a5e2ab60d99?w=500&q=80",
+                desc: "দৈনন্দিন ব্যবহারে অত্যন্ত আরামদায়ক পোলো টি-শার্ট।"
+            },
+            {
+                id: 4,
+                title: "পুরুষদের স্লিম ফিট প্যান্ট",
+                price: 1450,
+                img: "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=500&q=80",
+                desc: "ফ্লেক্সিবল এবং টেকসই উপাদান দিয়ে তৈরি স্লিম ফিট চিনোস।"
+            },
+            {
+                id: 5,
+                title: "এক্সক্লুসিভ ডিজাইনার পাঞ্জাবি",
+                price: 2800,
+                img: "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=500&q=80",
+                desc: "সূক্ষ্ম এমব্রয়ডারি কাজের আকর্ষণীয় প্রিমিয়াম পাঞ্জাবি।"
+            },
+            {
+                id: 6,
+                title: "স্পোর্টস রানিং শু",
+                price: 1990,
+                img: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80",
+                desc: "হালকা ওজন এবং রানিং বা হাঁটার জন্য সর্বোচ্চ আরামদায়ক স্নিকার্স।"
+            }
+        ];
+
+        let activeProduct = null;
+        let chosenSize = 'M';
+
+        // Render Product Grid
+        function loadProducts() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = productsData.map(item => `
+                <div class="product-card" onclick="openModal(${item.id})">
+                    <div class="img-wrapper">
+                        <img src="${item.img}" alt="${item.title}">
+                    </div>
+                    <div class="product-content">
+                        <div>
+                            <h3 class="product-title">${item.title}</h3>
+                            <div class="product-price">৳ ${item.price}</div>
+                        </div>
+                        <button class="btn-details">বিস্তারিত ও অর্ডার</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Open Modal Box
+        window.openModal = function(id) {
+            activeProduct = productsData.find(p => p.id === id);
+            document.getElementById('mTitle').innerText = activeProduct.title;
+            document.getElementById('mPrice').innerText = '৳ ' + activeProduct.price;
+            document.getElementById('mDesc').innerText = activeProduct.desc;
+            document.getElementById('mImg').src = activeProduct.img;
+            
+            window.updateTotal();
+            document.getElementById('productModal').style.display = 'flex';
+        };
+
+        window.closeModal = function() {
+            document.getElementById('productModal').style.display = 'none';
+        };
+
+        // Select Size
+        window.selectSize = function(element) {
+            document.querySelectorAll('.size-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            chosenSize = element.innerText;
+        };
+
+        // Update Total
+        window.updateTotal = function() {
+            if (!activeProduct) return;
+            const deliveryCharge = parseInt(document.getElementById('custLocation').value) || 60;
+            const finalPrice = activeProduct.price + deliveryCharge;
+            document.getElementById('totalPrice').innerText = '৳ ' + finalPrice;
+        };
+
+        // Submit Order Logic
+        document.getElementById('orderForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const btnText = document.getElementById('btnText');
+            
+            submitBtn.disabled = true;
+            btnText.innerText = "প্রসেস হচ্ছে...";
+
+            const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
+            const customerName = document.getElementById('custName').value;
+            const phone = document.getElementById('custPhone').value;
+            const address = document.getElementById('custAddress').value;
+            const delCharge = parseInt(document.getElementById('custLocation').value);
+            const totalAmount = activeProduct.price + delCharge;
+
+            const newOrder = {
+                orderId: orderId,
+                customerName: customerName,
+                phone: phone,
+                address: address,
+                product: activeProduct.title,
+                productPrice: activeProduct.price,
+                imageUrl: activeProduct.img,
+                size: chosenSize,
+                deliveryCharge: delCharge,
+                totalPrice: totalAmount,
+                status: 'Pending',
+                createdAt: serverTimestamp()
+            };
+
+            try {
+                // 1. Save order to new Firebase (girlsmarket-3dc1a)
+                await addDoc(collection(db, "orders"), newOrder);
+
+                // 2. Send instant Telegram alert with photo
+                const telegramCaption = `🚨 *NEW ORDER RECEIVED!*\n\n` +
+                    `🆔 *Order ID:* \`${orderId}\`\n` +
+                    `📦 *Product:* ${activeProduct.title}\n` +
+                    `📏 *Size:* ${chosenSize}\n` +
+                    `💰 *Price:* ৳${activeProduct.price} + ৳${delCharge} = *৳${totalAmount}*\n\n` +
+                    `👤 *Customer:* ${customerName}\n` +
+                    `📞 *Phone:* \`${phone}\`\n` +
+                    `🏠 *Address:* ${address}`;
+
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: TELEGRAM_CHAT_ID,
+                        photo: activeProduct.img,
+                        caption: telegramCaption,
+                        parse_mode: 'Markdown'
+                    })
+                });
+
+                alert('🎉 ধন্যবাদ! আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে।\nঅর্ডার আইডি: ' + orderId);
+                document.getElementById('orderForm').reset();
+                window.closeModal();
+            } catch (error) {
+                console.error("Order error:", error);
+                alert("অর্ডার পাঠাতে সমস্যা হয়েছে! দয়া করে আবার চেষ্টা করুন।");
+            } finally {
+                submitBtn.disabled = false;
+                btnText.innerText = "অর্ডার কনফার্ম করুন";
+            }
+        });
+
+        loadProducts();
+    </script>
+</body>
+</html>
